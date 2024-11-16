@@ -14,7 +14,7 @@ const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 // Components
 import { LobbyPage } from "./gameComponenets/LobbyPage";
-import { LoadingScreen } from "../../appComponents/LoadingSCreen"
+import { LoadingScreen } from "../../appComponents/LoadingScreen"
 import { PlayPage } from "./gameComponenets/PlayPage";
 import { RoundEnd } from "./gameComponenets/RoundEnd";
 
