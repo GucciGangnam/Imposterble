@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 // RRD 
 import { Routes, Route } from "react-router-dom"
 // Pages
-import { HomePage } from "./pages/home/Homepage"
+import { HomePage } from "./pages/home/HomePage"
 import { HostGame } from "./pages/home/HostGame"
 import { JoinGame } from "./pages/home/JoinGame"
 import { Howtoplay } from "./pages/home/Howtoplay"
