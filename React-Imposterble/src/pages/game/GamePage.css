@@ -1,0 +1,7 @@
+.GamePage{ 
+
+    min-height: calc(100dvh - 50px);
+    max-height: calc(100dvh - 50px);
+    display: flex;
+    flex-direction: column;
+}

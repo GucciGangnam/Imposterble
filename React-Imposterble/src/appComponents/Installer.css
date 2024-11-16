@@ -1,0 +1,124 @@
+.Installer {
+    background-color: #ebebed;
+    width: 100%;
+    height: calc(100dvh - 10px);
+    position: relative;
+
+
+    .Top {
+        height: 40%;
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        color: gray;
+
+    }
+
+    .Mid {
+
+        height: 33%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .White-Box {
+            background-color: white;
+            width: 90%;
+            border-radius: 10px;
+
+            display: grid;
+            grid-template-columns: 70px auto;
+            grid-template-rows: repeat(3, 1fr);
+
+
+            .Icon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: rgb(25, 129, 233);
+                padding: 10px;
+
+                img {
+                    width: 40px;
+                }
+            }
+
+            .Text {
+                display: flex;
+                justify-content: start;
+                align-items: center;
+                padding: 5px;
+            }
+        }
+    }
+
+    .Bot {
+        height: 26%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            width: 70px;
+            border-radius: 10px;
+        }
+    }
+
+
+
+
+    /* BANNER */
+    .Banner {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        background: linear-gradient(160deg, white 20%, rgb(255, 192, 75) 40%, orange 50%);
+        background-size: 200% 200%; /* Expands the background to make sure no color disappears */
+        animation: gradientMove 4s ease infinite; /* Slower animation duration */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        /* Creates a subtle 3D shadow effect */
+        border: 0px solid rgba(0, 0, 0, 0.1);
+        width: calc(100% + 10px);
+        height: 74%;
+        transition: 500ms ease-in-out;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+
+
+        color: white;
+        font-size: 3rem;
+        font-weight: bolder;
+
+        .Banner-Top{ 
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            gap: 20px;
+        }
+
+        button{ 
+            background-color: white;
+            color: orange;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+    }
+}
+
+
+/* ANIMATION */
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%; /* Starts at the left */
+    }
+    50% {
+        background-position: 30% 70%; /* Moves to the right */
+    }
+    100% {
+        background-position: 0% 50%; /* Returns back to the left */
+    }
+}

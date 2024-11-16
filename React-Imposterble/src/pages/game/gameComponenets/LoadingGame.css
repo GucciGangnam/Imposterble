@@ -1,0 +1,42 @@
+.LoadingGame{ 
+    background-color: rgb(255, 255, 255);
+    min-height: calc(100dvh - 50px);
+    max-height: calc(100dvh - 50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+
+    .Number{ 
+        position: absolute;
+        color: white;
+        font-size: 400px
+    }
+
+    .Circle { 
+        position: absolute;
+        width: 3000px;
+        height: 3000px;
+        background-color: orange;
+        border-radius: 100%;
+        animation: shrink 01s infinite;
+    }
+}
+
+/* // ANIMATIONS */
+@keyframes shrink {
+    0%, 100% {
+        width: 1000px;
+        height: 1000px;
+    }
+    90% {
+        width: 0px;
+        height: 0px;
+    }
+    100% {
+        width: 0px;
+        height: 0px;
+    }
+}

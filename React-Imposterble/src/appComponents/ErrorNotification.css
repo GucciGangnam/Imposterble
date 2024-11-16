@@ -1,0 +1,31 @@
+.ErrorNotification { 
+    background-color: rgb(255, 73, 73);
+    color: white;
+    padding: 10px;
+    border-radius: 25px;
+    position: absolute;
+    top: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 1000ms ease-in-out; /* Ensures smooth width transition */
+    width: 0px;
+    max-width: 400px;
+    text-align: center;
+    animation: growShrink 5s ease-in-out forwards; /* Add animation */
+}
+
+/* Keyframes to animate the width */
+@keyframes growShrink {
+    0% {
+        width: 0px;
+    }
+    20% {
+        width: 400px; /* After a brief moment (20% of the total time), reach full width */
+    }
+    80% {
+        width: 400px; /* Stay fully grown for the next duration */
+    }
+    100% {
+        width: 0px; /* After 4 seconds, shrink back to 0px */
+    }
+}

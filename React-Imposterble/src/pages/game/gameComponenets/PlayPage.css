@@ -1,0 +1,141 @@
+.PlayPage {
+
+    min-height: calc(100dvh - 50px);
+    max-height: calc(100dvh - 50px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+
+    /* HEADER */
+    .Header {
+        background-color: orange;
+        height: 60px;
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+        font-size: 1.8rem;
+        font-weight: bold;
+
+        .Timer {
+            width: 90px;
+
+        }
+
+        button {
+            border: none;
+            background-color: rgba(255, 255, 255, 0.5);
+            font-size: 1.8rem;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            width: 90px;
+        }
+    }
+
+
+    .Container {
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 16px;
+        background-color: white;
+        flex: 1;
+        transition: 300ms;
+    }
+
+    .Container.Top {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .Container-Name {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            padding: 5px;
+            background-color: white;
+        }
+
+        .SecretWord {
+            font-size: 3rem;
+            text-align: center;
+        }
+    }
+
+    .Container.Bottom {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 15px;
+        align-items: center;
+        justify-items: center;
+        position: relative;
+
+        .Container-Name {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            padding: 5px;
+            background-color: white;
+        }
+
+        .Votes-Ratio{ 
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            padding: 5px;
+            background-color: white;
+        }
+
+        .Player {
+            /* background-color: rgba(255, 166, 0, 0.3); */
+            border-radius: 10px;
+            /* outline: 2px solid red; */
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            gap: 0px;
+            font-size: 14px;
+
+            .Circle {
+                width: 70px;
+                height: 70px;
+                background-color:white;
+                border-radius: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 30px;
+                color: white;
+                position: relative;
+
+                .Vote-Count{ 
+                    background-color: rgb(255, 170, 170);
+                    font-size: 14px;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: absolute;
+                    top: 0px;
+                    left: 0px;
+                }
+            }
+
+
+        }
+
+    }
+
+}

@@ -1,0 +1,109 @@
+.RoundEnd {
+
+    min-height: calc(100dvh - 50px);
+    max-height: calc(100dvh - 50px);
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    text-align: center;
+
+    .Container {
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 10px;
+        flex: 1;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+
+        color: orange;
+    }
+
+    .Scores-Container {
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 10px;
+        flex: 1;
+
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 10px;
+        align-items: center;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .Winner-Container {
+        background-color: rgb(255, 255, 255);
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 10px;
+        flex: 1;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+
+    }
+
+    .Header {
+        background-color: orange;
+        height: 60px;
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        color: white;
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+
+
+    .Player {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: black;
+
+    }
+
+    .Circle {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        background-color: pink;
+        border-radius: 100%;
+        font-size: 24px;
+    }
+
+    .Name {}
+
+    .Next-Round-BTN {
+        background-color: rgba(255, 255, 255, 0.5);
+        border: none;
+        padding: 10px;
+        font-size: 1.8rem;
+        color: white;
+        border-radius: 10px;
+    }
+
+    .Next-Round-BTN:hover {
+        background-color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+    }
+}
