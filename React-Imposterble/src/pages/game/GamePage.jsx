@@ -13,7 +13,7 @@ import { io } from 'socket.io-client'
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 // Components
-import { LobbyPage } from "./gameComponenets/lobbyPage";
+import { LobbyPage } from "./gameComponenets/LobbyPage";
 import { LoadingScreen } from "../../appComponents/LoadingSCreen"
 import { PlayPage } from "./gameComponenets/PlayPage";
 import { RoundEnd } from "./gameComponenets/RoundEnd";
