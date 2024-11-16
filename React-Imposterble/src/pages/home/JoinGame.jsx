@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 // RRD 
 import { useNavigate } from "react-router-dom"
 // Componenets 
-import { LoadingScreen } from "../../appComponents/LoadingSCreen";
+import { LoadingScreen } from "../../appComponents/LoadingScreen";
 import { ErrorNotification } from "../../appComponents/ErrorNotification"
 // ENV
 const backendURL = import.meta.env.VITE_BACKEND_URL;
