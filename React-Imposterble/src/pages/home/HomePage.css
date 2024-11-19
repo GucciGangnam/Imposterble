@@ -7,7 +7,7 @@
 
     /* HEADER */
     .Header {
-        background-color: orange;
+        background: linear-gradient(140deg, var(--normal-orange) 50%, var(--cocoa-orange) 50%);
         height: 60px;
         padding: 10px;
         border-radius: 10px;
@@ -17,6 +17,7 @@
         color: white;
         font-size: 3rem;
         font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     .Content {

@@ -22,10 +22,11 @@ function App() {
 
 
   const [agent, setAgent] = useState(null);
-  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false); 
   const [bypass, setBypass] = useState(false);
 
   const determinClientAgent = () => {
+    
     if(bypass){ 
       return;
     }

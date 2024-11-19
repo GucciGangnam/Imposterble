@@ -1,16 +1,17 @@
 .CategoriesPage{ 
-    background-color: rgb(255, 255, 255);
+    background-color: var(--lavender);
     min-height: calc(100dvh - 150px);
     max-height: calc(100dvh - 150px);
     padding-top: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: orange;
+    color: var(--sunset);
     font-weight: bolder;
     text-align: center;
 
     .ChosenCat{ 
         font-size: 5rem;
+        color: var(--cocoa-orange);
     }
 }

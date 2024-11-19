@@ -5,11 +5,13 @@
     border-radius: 10px;
     padding: 10px;
     height: 60px;
-    background-color: orange;
+    background: linear-gradient(140deg, var(--normal-orange) 50%, var(--cocoa-orange) 50%);
     transition: 200ms;
     display: flex;
     flex-direction: column;
     z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
 
     .Header {
         height: 60px;
@@ -26,6 +28,7 @@
             transition: 300ms;
             cursor: pointer;
             margin-left: 30px;
+            stroke: var(--slate-gray);
         }
 
         button {
@@ -47,7 +50,8 @@
     border-radius: 10px;
     padding: 10px;
     height: calc(100dvh - 70px);
-    background-color: orange;
+    background: linear-gradient(140deg, var(--lavender) 1%, var(--normal-orange) 20%, var(--cocoa-orange) 50%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: 200ms;
     display: flex;
     flex-direction: column;
@@ -70,6 +74,8 @@
             transform: rotate(90deg);
             cursor: pointer;
             margin-left: 30px;
+            stroke: var(--slate-gray);
+            fill: var(--slate-gray);
         }
 
         button {
@@ -87,7 +93,7 @@
         flex: 1;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        color: white;
+        color: var(--lavender);
         font-size: larger;
         gap: 10px;
     }
@@ -114,7 +120,7 @@
             height: 100%;
             border: none;
             background-color: inherit;
-            color: white;
+            color: var(--lavender);
             font-size: 1.8rem;
             border-radius: 10px;
             /* Add box-shadow for a beveled effect */
@@ -143,7 +149,7 @@
             padding: 10px;
             font-size: large;
             width: 50%;
-            color: white;
+            color: var(--lavender);
             font-size: 2rem;
         }
 
@@ -163,6 +169,7 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        color: var(--slate-gray);
     }
 
     .End-Game:hover {
@@ -171,7 +178,7 @@
 
 }
 
-.LobbyNav-Not-Host {
+/* .LobbyNav-Not-Host {
     position: absolute;
     top: 5px;
     width: calc(100% - 30px);
@@ -182,8 +189,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    color: var(--lavender);
     z-index: 10;
     font-size: 3rem;
     font-weight: bold;
-}
+} */

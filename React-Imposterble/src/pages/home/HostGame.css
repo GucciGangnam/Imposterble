@@ -6,7 +6,8 @@
 
     /* HEADER */
     .Header {
-        background-color: orange;
+        background: linear-gradient(140deg, var(--normal-orange) 50%, var(--cocoa-orange) 50%);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         height: 60px;
         padding: 10px;
         border-radius: 10px;
@@ -20,7 +21,7 @@
         svg {
             position: absolute;
             left: 10px;
-            fill: white;
+            fill: var(--slate-gray);
         }
     }
 
@@ -33,18 +34,24 @@
         align-items: center;
 
         .NameInput {
+            background-color: var(--lavender);
             max-width: 90%;
             padding: 0px;
             height: 58px;
             border-radius: 25px;
-            outline: 1px solid orange;
+            outline: 1px solid var(--slate-gray);
             border: none;
             overflow: hidden;
             font-size: 1.8rem;
             text-align: center;
-            color: orange;
-            caret-color: darkorange;
+            caret-color: var(--slate-gray);
             font-weight: bold;
+            color: var(--slate-gray);
+        }
+
+        .NameInput:focus {
+            border: 1px solid var(--cocoa-orange);
+            outline: none;
         }
     }
 

@@ -1,5 +1,5 @@
 .LoadingGame{ 
-    background-color: rgb(255, 255, 255);
+    background-color: var(--lavender);
     min-height: calc(100dvh - 50px);
     max-height: calc(100dvh - 50px);
     display: flex;
@@ -11,7 +11,7 @@
 
     .Number{ 
         position: absolute;
-        color: white;
+        color: var(--lavender);
         font-size: 400px
     }
 
@@ -19,7 +19,7 @@
         position: absolute;
         width: 3000px;
         height: 3000px;
-        background-color: orange;
+        background-color: var(--sunset);
         border-radius: 100%;
         animation: shrink 01s infinite;
     }

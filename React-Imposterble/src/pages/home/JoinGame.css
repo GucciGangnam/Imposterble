@@ -3,10 +3,12 @@
     max-height: calc(100dvh - 50px);
     display: flex;
     flex-direction: column;
+    color: var(--slate-gray);
 
     /* HEADER */
     .Header {
-        background-color: orange;
+        background: linear-gradient(140deg, var(--normal-orange) 50%, var(--cocoa-orange) 50%);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         height: 60px;
         padding: 10px;
         border-radius: 10px;
@@ -20,7 +22,7 @@
         svg {
             position: absolute;
             left: 10px;
-            fill: white;
+            fill: var(--slate-gray);
         }
     }
 
@@ -50,11 +52,12 @@
                 padding: 0;
                 text-align: center;
                 caret-color: transparent;
-                color: orange;
+                color: var(--slate-gray);
+                background-color: var(--lavender);
             }
 
             input:focus {
-                outline: 2px solid orange;
+                outline: 2px solid var(--cocoa-orange);
             }
         }
 
@@ -64,14 +67,18 @@
             padding: 0px;
             height: 58px;
             border-radius: 25px;
-            outline: 1px solid orange;
+            outline: 1px solid var( --slate-gray);
             border: none;
             overflow: hidden;
             font-size: 1.8rem;
             text-align: center;
-            color: orange;
-            caret-color: darkorange;
+            color: var(--slate-gray);
+            caret-color: var(--slate-gray);
             font-weight: bold;
+        }
+        .NameInput:focus{ 
+            outline: none;
+            border: 1px solid var(--cocoa-orange);
         }
     }
 

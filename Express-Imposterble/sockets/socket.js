@@ -437,6 +437,18 @@ const initSocket = (server) => {
                         } else {
                             // Remove the player from the game.players array
                             game.players = game.players.filter(player => player.socketID !== socket.id);
+
+                            if (game.state.roundVotes) {
+                                // Remove the player's ID from roundVotes
+                                delete game.state.roundVotes[player.id];
+
+                                // Iterate over the roundVotes object to find and reset votes cast for the disconnected player
+                                for (const voterId in game.state.roundVotes) {
+                                    if (game.state.roundVotes[voterId] === player.id) {
+                                        game.state.roundVotes[voterId] = null; // Reset the vote to null
+                                    }
+                                }
+                            }
                             // Emit the updated game object to all players in the room
                             io.to(game.lobbyCode).emit('updatedGame', game);
                         }

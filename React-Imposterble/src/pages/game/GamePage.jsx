@@ -37,6 +37,10 @@ export const GamePage = () => {
     // REFS
     const socketRef = useRef(null);  // Store the socket instance
 
+
+    // REMOVE MEEEEEEEEEEE
+console.log(clientGameOBJ)
+
     useEffect(() => {
         // Set Player ID 
         const storedPlayerID = localStorage.getItem('playerID');

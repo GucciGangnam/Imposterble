@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     gap: 50px;
-    color: orange;
+    color: var(--slate-gray);
     font-size: 1.8rem;
 
     .Container {
@@ -20,7 +20,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: rgb(255, 255, 255);
+        background-color: var(--lavender);
         animation: changeColor 0.8s infinite;
 
         /* Add unique delays for each dot */
@@ -37,12 +37,12 @@
 
 /* Keyframe animation for orange dots with size increase */
 @keyframes changeColor {
-    0%, 100% { background-color: rgb(255, 255, 255); transform: scale(0.5); }
-    50% { background-color: orange; transform: scale(1); }
+    0%, 100% { background-color: var(--lavender); transform: scale(0.5); }
+    50% { background-color: var(--cocoa-orange); transform: scale(1); }
 }
 
 /* Keyframe animation for black dot with size increase */
 @keyframes changeColorBlack {
-    0%, 100% { background-color: rgb(255, 255, 255); transform: scale(0.5); }
-    50% { background-color: rgb(109, 109, 109); transform: scale(1); }
+    0%, 100% { background-color: var(--lavender); transform: scale(0.5); }
+    50% { background-color: var(--slate-gray); transform: scale(1); }
 }

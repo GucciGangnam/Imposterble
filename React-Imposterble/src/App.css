@@ -1,12 +1,26 @@
+
+
+:root{ 
+  --slate-gray: #6b818c;
+  --normal-orange: #ffa500;
+  --cocoa-orange: #e06e1d;
+  --sunset: #f3d4a5;
+  --lavender: #f7f3f5;
+}
+
+
+
 .App {
   font-family: 'Trebuchet MS', 'Helvetica', 'Arial', sans-serif;
 
-  background: radial-gradient(circle, pink 10%, transparent 10%) 0 0,
-  radial-gradient(circle, pink 10%, transparent 10%) 5px 5px;
-background-size: 10px 10px;
-background-repeat: repeat;
-  
+  /* background: radial-gradient(circle, pink 10%, transparent 10%) 0 0,
+    radial-gradient(circle, pink 10%, transparent 10%) 5px 5px;
+  background-size: 10px 10px;
+  background-repeat: repeat; */
 
+  background-color: var(--lavender);
+  background-image: radial-gradient(circle, var(--cocoa-orange) 0px, transparent 1px);
+  background-size: 10px 10px;
   min-height: calc(100dvh - 50px);
   min-width: calc(100vw - 10px);
   max-width: calc(100vw - 10px);
@@ -19,11 +33,11 @@ background-repeat: repeat;
 }
 
 .Main-BTN {
-  background-color: orange;
+  background: linear-gradient(140deg, var(--normal-orange), var(--cocoa-orange));
   padding: 15px;
   border: none;
   border-radius: 50px;
-  color: white;
+  color: var(--lavender);
   font-size: 1.5rem;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -35,7 +49,6 @@ background-repeat: repeat;
 }
 
 .Main-BTN:hover {
-  background-color: rgb(255, 153, 0);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 
 }
