@@ -28,7 +28,7 @@
             transition: 300ms;
             cursor: pointer;
             margin-left: 30px;
-            stroke: var(--slate-gray);
+            /* stroke: var(--slate-gray); */
         }
 
         button {
@@ -74,8 +74,6 @@
             transform: rotate(90deg);
             cursor: pointer;
             margin-left: 30px;
-            stroke: var(--slate-gray);
-            fill: var(--slate-gray);
         }
 
         button {
