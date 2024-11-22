@@ -38,7 +38,7 @@ export const LobbyPage = ({ socketRef, clientGameOBJ, clientPlayerID, clientIsHo
                     {clientGameOBJ.players.map((player) => (
                         <div
                             key={player.id}
-                            className="Player">
+                            className={player.online ? "Player" : "Player-Offline"}>
                             <div 
                             className="Circle"
                             style={{background: `${player.color}`}}>

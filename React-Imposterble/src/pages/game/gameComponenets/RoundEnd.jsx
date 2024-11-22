@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 
 import { useNavigate } from "react-router-dom";
+import { Socket } from "socket.io-client";
 
 
 
@@ -125,6 +126,21 @@ export const RoundEnd = ({ clientGameOBJ, clientPlayerID, socketRef }) => {
         player => clientGameOBJ.state.totalScores[player.id] === topScore
     );
 
+    const leaveGame = () => {
+        console.log("leaveing gamne")
+
+        if (socketRef.current) {
+            socketRef.current.emit('DeleteGameOver', {lobbyCode: clientGameOBJ.lobbyCode });
+            socketRef.current.disconnect();
+        }
+        localStorage.removeItem('currentSession');
+        localStorage.removeItem('playerID');
+        navigate("../")
+
+    }
+
+
+
 
 
     return (
@@ -176,7 +192,7 @@ export const RoundEnd = ({ clientGameOBJ, clientPlayerID, socketRef }) => {
                         <>
                             <div className="Header">
                                 Game over
-                                <button className="Next-Round-BTN" onClick={() => { navigate("../") }}>Leave</button>
+                                <button className="Next-Round-BTN" onClick={leaveGame}>Leave</button>
                             </div>
                             <div className="Winner-Container">
                                 <h1>{winners.length > 1 ? "The winners are" : "The winner is"}</h1>

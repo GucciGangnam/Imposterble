@@ -331,11 +331,11 @@ const initSocket = (server) => {
             const game = games.find(game => game.lobbyCode === lobbycode);
             // Check if the game exists and if the playerID is valid
             if (game) {
-                if (game.state.gameState !== "Lobby") {
-                    // Emit an error message to the client
-                    socket.emit('error', { message: "Game already in progress" });
-                    return;
-                }
+                // if (game.state.gameState !== "Lobby") {
+                //     // Emit an error message to the client
+                //     socket.emit('error', { message: "Game already in progress" });
+                //     return;
+                // }
                 if (game.players.some(player => player.id === storedPlayerID)) {
                     // Player is valid; join the room
                     socket.join(lobbycode);
@@ -359,6 +359,7 @@ const initSocket = (server) => {
                     if (player) {
                         // Assign the socket.id to the player's socketID property
                         player.socketID = socket.id;
+                        player.online = true;
                     }
                     io.to(lobbycode).emit('updatedGame', game);
                 } else {
@@ -380,30 +381,55 @@ const initSocket = (server) => {
         });
         // ON DISCONNECT ///////////////////////////////////////////////////////////////////
         // Handle player disconnect event
-        socket.on('playerDisconnected', ({ playerID, lobbyCode }) => {
-            console.log(`Player ${playerID} disconnected from lobby ${lobbyCode}`);
+        socket.on('playerLeaveLobby', ({ playerID, lobbyCode }) => {
+            console.log(`Player ${playerID} LEFT LOBBY ${lobbyCode}`);
             const game = games.find(game => game.lobbyCode === lobbyCode);
-            if (game) {
-                // If the disconnecting player is the host, delete the game and disconnect all players
-                if (game.hostId === playerID) {
-                    console.log(`Host player ${playerID} is disconnecting. Deleting the game.`);
-                    // Remove the game from the games array
-                    const gameIndex = games.findIndex(game => game.lobbyCode === lobbyCode);
-                    if (gameIndex !== -1) {
-                        games.splice(gameIndex, 1);  // Remove the game from array
-                    }
-                    // Emit to all players that the game is deleted
-                    io.to(lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because the host disconnected.' });
-                    // Disconnect all players in this lobby
-                    io.in(lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
-                } else {
-                    // Remove the player from the game.players array
-                    game.players = game.players.filter(player => player.id !== playerID);
-                    // Emit the updated game object to all players in the room
-                    io.to(lobbyCode).emit('updatedGame', game);
+            if (!game) {
+                socket.emit('error', { message: "Game not found" });
+                return;
+            }
+            if (game.hostId === playerID) {
+                console.log(`Host player ${playerID} is disconnecting. Deleting the game.`);
+                // Remove the game from the games array
+                const gameIndex = games.findIndex(game => game.lobbyCode === lobbyCode);
+                if (gameIndex !== -1) {
+                    games.splice(gameIndex, 1);  // Remove the game from array
                 }
+                // Emit to all players that the game is deleted
+                io.to(lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because the host disconnected.' });
+                // Disconnect all players in this lobby
+                io.in(lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
+            } else {
+                // Remove the player from the game.players array
+                game.players = game.players.filter(player => player.id !== playerID);
+                // Emit the updated game object to all players in the room
+                io.to(lobbyCode).emit('updatedGame', game);
+            }
+        })
+
+        // DELETE GAME ON COMPLETION
+        socket.on('DeleteGameOver', ({lobbyCode}) => {
+            // Find the game by lobbyCode
+            const gameIndex = games.findIndex(game => game.lobbyCode === lobbyCode);
+            
+            // If the game exists, remove it from the games array
+            if (gameIndex !== -1) {
+                games.splice(gameIndex, 1);
+                console.log('game deleted') // Remove the game from the array
             }
         });
+
+        // PLAYER DISCOMMENT EMITION
+
+        // socket.on('playerDisconnected', ({ playerID, lobbyCode }) => {
+        //     console.log(`Player ${playerID} disconnected from lobby ${lobbyCode}`);
+        //     const game = games.find(game => game.lobbyCode === lobbyCode);
+        //     if (game) {
+        //         ConstantSourceNode.log("BREAK POINT _ NEEDS CDE")
+        //     }
+        // });
+
+
         // Handle unexpected disconnects (if the player doesn't manually emit playerDisconnected)
         socket.on('disconnect', () => {
             console.log('A user disconnected:', socket.id);
@@ -411,52 +437,67 @@ const initSocket = (server) => {
             for (const game of games) {
                 const player = game.players.find(player => player.socketID === socket.id);
                 if (player) {
-                    // If the disconnecting player is the host, delete the game and disconnect all players
-                    if (game.hostId === player.id) {
-                        console.log(`Host player ${socket.id} is disconnecting. Deleting the game.`);
-                        const gameIndex = games.findIndex(game => game.lobbyCode === game.lobbyCode);
-                        if (gameIndex !== -1) {
-                            games.splice(gameIndex, 1);  // Remove game from array
-                        }
-                        // Notify all players that the game has been deleted
-                        io.to(game.lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because the host disconnected.' });
-                        // Disconnect all players in this lobby
-                        io.in(game.lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
-                    } else {
-
-                        if (game.state.gameState !== "Lobby") {
-                            console.log(`A vital player ${socket.id} is disconnecting. Deleting the game.`);
-                            const gameIndex = games.findIndex(game => game.lobbyCode === game.lobbyCode);
-                            if (gameIndex !== -1) {
-                                games.splice(gameIndex, 1);  // Remove game from array
-                            }
-                            // Notify all players that the game has been deleted
-                            io.to(game.lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because a vital player disconnected.' });
-                            // Disconnect all players in this lobby
-                            io.in(game.lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
-                        } else {
-                            // Remove the player from the game.players array
-                            game.players = game.players.filter(player => player.socketID !== socket.id);
-
-                            if (game.state.roundVotes) {
-                                // Remove the player's ID from roundVotes
-                                delete game.state.roundVotes[player.id];
-
-                                // Iterate over the roundVotes object to find and reset votes cast for the disconnected player
-                                for (const voterId in game.state.roundVotes) {
-                                    if (game.state.roundVotes[voterId] === player.id) {
-                                        game.state.roundVotes[voterId] = null; // Reset the vote to null
-                                    }
-                                }
-                            }
-                            // Emit the updated game object to all players in the room
-                            io.to(game.lobbyCode).emit('updatedGame', game);
-                        }
-                    }
+                    player.online = false;
+                    io.to(game.lobbyCode).emit('updatedGame', game);
                     break; // Once the player is found, no need to continue
                 }
             }
         });
+
+
+
+        // socket.on('disconnect', () => {
+        //     console.log('A user disconnected:', socket.id);
+        //     // Check if the disconnected socket belongs to a player in a game
+        //     for (const game of games) {
+        //         const player = game.players.find(player => player.socketID === socket.id);
+        //         if (player) {
+        //             // If the disconnecting player is the host, delete the game and disconnect all players
+        //             if (game.hostId === player.id) {
+        //                 console.log(`Host player ${socket.id} is disconnecting. Deleting the game.`);
+        //                 const gameIndex = games.findIndex(game => game.lobbyCode === game.lobbyCode);
+        //                 if (gameIndex !== -1) {
+        //                     games.splice(gameIndex, 1);  // Remove game from array
+        //                 }
+        //                 // Notify all players that the game has been deleted
+        //                 io.to(game.lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because the host disconnected.' });
+        //                 // Disconnect all players in this lobby
+        //                 io.in(game.lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
+        //             } else {
+
+        //                 if (game.state.gameState !== "Lobby") {
+        //                     console.log(`A vital player ${socket.id} is disconnecting. Deleting the game.`);
+        //                     const gameIndex = games.findIndex(game => game.lobbyCode === game.lobbyCode);
+        //                     if (gameIndex !== -1) {
+        //                         games.splice(gameIndex, 1);  // Remove game from array
+        //                     }
+        //                     // Notify all players that the game has been deleted
+        //                     io.to(game.lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because a vital player disconnected.' });
+        //                     // Disconnect all players in this lobby
+        //                     io.in(game.lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
+        //                 } else {
+        //                     // Remove the player from the game.players array
+        //                     game.players = game.players.filter(player => player.socketID !== socket.id);
+
+        //                     if (game.state.roundVotes) {
+        //                         // Remove the player's ID from roundVotes
+        //                         delete game.state.roundVotes[player.id];
+
+        //                         // Iterate over the roundVotes object to find and reset votes cast for the disconnected player
+        //                         for (const voterId in game.state.roundVotes) {
+        //                             if (game.state.roundVotes[voterId] === player.id) {
+        //                                 game.state.roundVotes[voterId] = null; // Reset the vote to null
+        //                             }
+        //                         }
+        //                     }
+        //                     // Emit the updated game object to all players in the room
+        //                     io.to(game.lobbyCode).emit('updatedGame', game);
+        //                 }
+        //             }
+        //             break; // Once the player is found, no need to continue
+        //         }
+        //     }
+        // });
 
         // UPDATE SETTINGS ///////////////////////////////////////////
         // Upadte number of rounds

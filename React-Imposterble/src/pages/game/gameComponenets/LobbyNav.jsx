@@ -23,9 +23,14 @@ export const LobbyNav = ({ lobbycode, socketRef, clientIsHost, clientGameOBJ }) 
     };
     const handleEndGame = () => {
         if (socketRef.current) {
-            socketRef.current.emit('playerDisconnected', { playerID: storedPlayerID, lobbyCode: lobbycode });
+            socketRef.current.emit('playerLeaveLobby', { playerID: storedPlayerID, lobbyCode: lobbycode });
         }
-        navigate('../')
+        setTimeout(() => {
+            localStorage.removeItem('currentSession');
+            localStorage.removeItem('playerID');
+            navigate('../')
+        }, 1000)
+
     };
 
     const handleChangeNumberOfRounds = (e) => {

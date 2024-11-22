@@ -19,6 +19,19 @@
         font-size: 3rem;
         font-weight: bold;
 
+        button {
+            border: none;
+            background-color: rgba(255, 255, 255, 0.5);
+            font-size: 1.8rem;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover{ 
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
         svg {
             position: absolute;
             left: 10px;

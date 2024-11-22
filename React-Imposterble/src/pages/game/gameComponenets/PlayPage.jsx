@@ -104,7 +104,7 @@ export const PlayPage = ({ clientGameOBJ, clientPlayerID, socketRef }) => {
                             return (
                                 <div
                                     key={player.id}
-                                    className="Player">
+                                    className={player.online ? "Player" : "Player-Offline"}>
                                     <div
                                         onClick={() => { handleVoteForPlayer(player.id) }}
                                         className="Circle"

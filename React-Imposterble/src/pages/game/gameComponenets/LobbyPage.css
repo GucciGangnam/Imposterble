@@ -48,6 +48,8 @@
             align-items: center;
             gap: 0px;
             font-size: 14px;
+            cursor: pointer;
+            outline: none;
 
             .Circle {
                 width: 70px;
@@ -60,6 +62,48 @@
                 font-size: 30px;
                 color: var(--slate-gray);
                 outline: 2px solid var(--slate-gray);
+            }
+        }
+
+        .Player-Offline{ 
+            border-radius: 10px;
+            height: 90%;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0px;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+
+            .Circle {
+                width: 70px;
+                height: 70px;
+                background-color: pink;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 30px;
+                color: var(--slate-gray);
+                position: relative;
+                opacity: 0.4;
+            }
+            
+            .Circle::before {
+                content: '';
+                position: absolute;
+                width: 70px; /* Match the Circle's size */
+                height: 70px; /* Match the Circle's size */
+                border: 2px solid transparent; /* Invisible base border */
+                border-top: 3px solid var(--slate-gray); /* Visible arc */
+                border-radius: 50%; /* Make it circular */
+                top: 3; /* Align perfectly with the Circle */
+                left: 0; /* Align perfectly with the Circle */
+                animation: spin 0.5s linear infinite;
+                z-index: -1; /* Keep behind the main Circle */
             }
         }
     }
@@ -85,5 +129,15 @@
         .Lobby-Code {
             font-size: 5rem;
         }
+    }
+}
+
+/* // ANIMIATIONS  */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }

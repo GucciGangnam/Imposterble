@@ -39,7 +39,9 @@ export const GamePage = () => {
 
 
     // REMOVE MEEEEEEEEEEE
-console.log(clientGameOBJ)
+    useEffect(() => {
+        console.log(clientGameOBJ)
+    }, [clientGameOBJ])
 
     useEffect(() => {
         // Set Player ID 
@@ -56,9 +58,10 @@ console.log(clientGameOBJ)
 
         socketRef.current = socket;
         socket.emit('enterLobby', { lobbycode, storedPlayerID });
+
         socket.on('updatedGame', (game) => {
             setClientGameOBJ(game);
-            // console.log(game)
+            localStorage.setItem('currentSession', game.lobbyCode)
             setClientPlayerID(storedPlayerID);
             if (game.hostId === storedPlayerID) {
                 setClientIsHost(true)

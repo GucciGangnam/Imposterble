@@ -100,7 +100,12 @@ export const JoinGame = () => {
         } finally {
             setLoading(false);
         }
+    }
 
+    // RE join game 
+    const reJoin = () => { 
+        const lobbyCode = localStorage.getItem('currentSession')
+        navigate(`../game/${lobbyCode}`)
     }
 
 
@@ -115,7 +120,11 @@ export const JoinGame = () => {
                 <LoadingScreen message={"Joining Game"} />
             ) : (
                 <div className="JoinGame">
-                    <div className="Header">
+
+                    {localStorage.getItem('currentSession') ? (
+                        <div className="Header"><button onClick={reJoin}>Re-join game</button></div>
+                    ) : (
+                        <div className="Header">
                         <svg
                             onClick={() => { navigate('/') }}
                             cursor="pointer"
@@ -142,6 +151,13 @@ export const JoinGame = () => {
                         </svg>
                         Imposterble
                     </div>
+                    )
+                    }
+
+
+
+
+
                     <div className="Content">
                         {errorMessage && (
                             <ErrorNotification message={"Lobby doesn't exist"} />

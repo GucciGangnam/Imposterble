@@ -48,7 +48,8 @@ router.post('/create',
             const host = {
                 name: req.body.name,
                 id: hostID,
-                color: null
+                color: null,
+                online: null
             };
             // Create game object
             const gameID = uuidv4();
@@ -119,13 +120,17 @@ router.post('/join',
             const newPlayer = {
                 name: req.body.name,
                 id: playerID,
-                color: null
+                color: null,
+                online: null
             };
             // Get teh game object with teh lobby code === req.body.lobbyCode
             const game = games.find(game => game.lobbyCode === req.body.lobbyCode);
             // Check if the game exists
             if (!game) {
                 throw new Error('Game not found.');
+            }
+            if (game.state.gameState !== "Lobby"){
+                throw new Error('Game already in progress');
             }
             // Add the new player to the game's players array
             game.players.push(newPlayer);
