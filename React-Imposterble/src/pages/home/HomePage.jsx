@@ -23,18 +23,9 @@ export const HomePage = () => {
 
     // Handler 
 const reJoin = () => { 
-    const sessionData = JSON.parse(localStorage.getItem('currentSession'));
-    if (sessionData) {
-        const createdAt = new Date(sessionData.createdAt); // Convert string to Date object
-        const lobbyCode = sessionData.code;
-        console.log('Created At:', createdAt); // Logs as a Date object
-        console.log('Lobby Code:', lobbyCode);
-        navigate(`../game/${lobbyCode}`)
-    }
-
+    const lobbyCode = localStorage.getItem('currentSession')
+    navigate(`../game/${lobbyCode}`)
 }
-
-
 
     return (
         <div className="HomePage">

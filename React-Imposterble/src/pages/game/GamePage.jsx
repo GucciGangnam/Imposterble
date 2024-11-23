@@ -61,10 +61,7 @@ export const GamePage = () => {
 
         socket.on('updatedGame', (game) => {
             setClientGameOBJ(game);
-            localStorage.setItem('currentSession', JSON.stringify({
-                code: game.lobbyCode,
-                createdAt: new Date().toISOString() // Store as ISO string to avoid issues with Date formatting
-            }));
+            localStorage.setItem('currentSession', game.lobbyCode)
             setClientPlayerID(storedPlayerID);
             if (game.hostId === storedPlayerID) {
                 setClientIsHost(true)
