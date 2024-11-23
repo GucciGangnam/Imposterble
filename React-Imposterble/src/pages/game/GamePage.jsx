@@ -45,7 +45,9 @@ export const GamePage = () => {
 
     useEffect(() => {
         // Set Player ID 
+        // Get stored player ID and lobby code from localStorage
         const storedPlayerID = localStorage.getItem('playerID');
+        const storedLobbyCode = localStorage.getItem('currentSession');
         // If lobbycode or storedPlayerID is missing, return early
         if (!lobbycode || !storedPlayerID) {
             // console.log("Missing lobbycode or playerID");
@@ -54,6 +56,7 @@ export const GamePage = () => {
         // const socket = io(backendURL);
         const socket = io(import.meta.env.VITE_BACKEND_URL, {
             transports: ['websocket'], // Ensure WebSocket transport is used
+            query: { playerID: storedPlayerID, lobbyCode: storedLobbyCode }, // Send player info as query params to maintain state
         });
 
         socketRef.current = socket;
@@ -71,7 +74,7 @@ export const GamePage = () => {
         socket.on('error', (error) => {
             console.log(error.message);
             alert(error.message);
-            if (error.message === 'Game not found.'){ 
+            if (error.message === 'Game not found.') {
                 localStorage.removeItem('currentSession')
                 localStorage.removeItem('playerID')
             }
@@ -86,12 +89,12 @@ export const GamePage = () => {
         });
         // Cleanup the socket connection if needed
         return () => {
-            socket.emit('playerDisconnected', { playerID: storedPlayerID, lobbyCode: lobbycode });
-            socket.disconnect();
-            navigate('../')
-            // console.log("Socket disconnected");
+            if (storedPlayerID && storedLobbyCode) {
+                socket.emit('playerDisconnected', { playerID: storedPlayerID, lobbyCode: storedLobbyCode });
+            }
+            socket.disconnect(); // Disconnect from socket
         };
-    }, [])
+    }, []);
 
 
     return (
