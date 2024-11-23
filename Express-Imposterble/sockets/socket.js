@@ -445,60 +445,6 @@ const initSocket = (server) => {
         });
 
 
-
-        // socket.on('disconnect', () => {
-        //     console.log('A user disconnected:', socket.id);
-        //     // Check if the disconnected socket belongs to a player in a game
-        //     for (const game of games) {
-        //         const player = game.players.find(player => player.socketID === socket.id);
-        //         if (player) {
-        //             // If the disconnecting player is the host, delete the game and disconnect all players
-        //             if (game.hostId === player.id) {
-        //                 console.log(`Host player ${socket.id} is disconnecting. Deleting the game.`);
-        //                 const gameIndex = games.findIndex(game => game.lobbyCode === game.lobbyCode);
-        //                 if (gameIndex !== -1) {
-        //                     games.splice(gameIndex, 1);  // Remove game from array
-        //                 }
-        //                 // Notify all players that the game has been deleted
-        //                 io.to(game.lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because the host disconnected.' });
-        //                 // Disconnect all players in this lobby
-        //                 io.in(game.lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
-        //             } else {
-
-        //                 if (game.state.gameState !== "Lobby") {
-        //                     console.log(`A vital player ${socket.id} is disconnecting. Deleting the game.`);
-        //                     const gameIndex = games.findIndex(game => game.lobbyCode === game.lobbyCode);
-        //                     if (gameIndex !== -1) {
-        //                         games.splice(gameIndex, 1);  // Remove game from array
-        //                     }
-        //                     // Notify all players that the game has been deleted
-        //                     io.to(game.lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because a vital player disconnected.' });
-        //                     // Disconnect all players in this lobby
-        //                     io.in(game.lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
-        //                 } else {
-        //                     // Remove the player from the game.players array
-        //                     game.players = game.players.filter(player => player.socketID !== socket.id);
-
-        //                     if (game.state.roundVotes) {
-        //                         // Remove the player's ID from roundVotes
-        //                         delete game.state.roundVotes[player.id];
-
-        //                         // Iterate over the roundVotes object to find and reset votes cast for the disconnected player
-        //                         for (const voterId in game.state.roundVotes) {
-        //                             if (game.state.roundVotes[voterId] === player.id) {
-        //                                 game.state.roundVotes[voterId] = null; // Reset the vote to null
-        //                             }
-        //                         }
-        //                     }
-        //                     // Emit the updated game object to all players in the room
-        //                     io.to(game.lobbyCode).emit('updatedGame', game);
-        //                 }
-        //             }
-        //             break; // Once the player is found, no need to continue
-        //         }
-        //     }
-        // });
-
         // UPDATE SETTINGS ///////////////////////////////////////////
         // Upadte number of rounds
         socket.on('roundsUpdated', ({ playerID, lobbyCode, newRounds }) => {

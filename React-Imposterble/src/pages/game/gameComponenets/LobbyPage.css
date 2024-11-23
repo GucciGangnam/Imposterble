@@ -32,6 +32,8 @@
 
         .Container-Name {
             background: linear-gradient(to bottom, var(--lavender) 50%, var(--lavender) 50%);
+            outline: 2px solid var(--slate-gray);
+            border-radius: 10px;
             position: absolute;
             padding: 5px;
             top: -15px;
@@ -120,6 +122,8 @@
 
         .Container-Name {
             background: linear-gradient(to bottom, var(--lavender) 50%, var(--lavender) 50%);
+            outline: 2px solid var(--slate-gray);
+            border-radius: 10px;
             position: absolute;
             padding: 5px;
             top: -15px;
