@@ -61,7 +61,7 @@ export const GamePage = () => {
 
         socket.on('updatedGame', (game) => {
             setClientGameOBJ(game);
-            localStorage.setItem('currentSession', game.lobbyCode)
+            localStorage.setItem('currentSession', {code : game.lobbyCode, createdAt : new Date()})
             setClientPlayerID(storedPlayerID);
             if (game.hostId === storedPlayerID) {
                 setClientIsHost(true)
@@ -71,11 +71,17 @@ export const GamePage = () => {
         socket.on('error', (error) => {
             console.log(error.message);
             alert(error.message);
+            if (error.message === 'Game not found.'){ 
+                localStorage.removeItem('currentSession')
+                localStorage.removeItem('playerID')
+            }
             navigate('../')
         });
         socket.on('gameDeleted', (message) => {
             console.log(message.message);
             alert(message.message);
+            localStorage.removeItem('currentSession')
+            localStorage.removeItem('playerID')
             navigate('../')
         });
         // Cleanup the socket connection if needed
