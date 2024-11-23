@@ -88,6 +88,7 @@ export const GamePage = () => {
         return () => {
             socket.emit('playerDisconnected', { playerID: storedPlayerID, lobbyCode: lobbycode });
             socket.disconnect();
+            navigate('../')
             // console.log("Socket disconnected");
         };
     }, [])

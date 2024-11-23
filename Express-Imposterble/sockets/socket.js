@@ -322,7 +322,16 @@ const initSocket = (server) => {
 
     // CONNECT TO SOCKET ///////////////////////////////////////////////////////////////////
     io.on('connection', (socket) => {
+        
         console.log('A user connected');
+        for (const game of games) {
+            const player = game.players.find(player => player.socketID === socket.id);
+            if (player) {
+                player.online = true;
+                io.to(game.lobbyCode).emit('updatedGame', game);
+                break; // Once the player is found, no need to continue
+            }
+        }
 
 
         // ON ENTER LOBBY  ///////////////////////////////////////////////////////////////////
