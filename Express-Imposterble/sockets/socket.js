@@ -310,7 +310,7 @@ let io;
 const initSocket = (server) => {
     // DEFINE CORS OPTIONS ///////////////////////////////////////////////////////////////////
     const corsOptions = {
-        origin: [process.env.FRONTEND_URL],
+        origin: [process.env.FRONTEND_URL, process.env.NGROK_URL, process.env.HOST_FRONTEND_URL],
         methods: ['GET', 'POST'],
         credentials: true
     };
@@ -322,8 +322,8 @@ const initSocket = (server) => {
 
     // CONNECT TO SOCKET ///////////////////////////////////////////////////////////////////
     io.on('connection', (socket) => {
-        
-        console.log('A user connected');
+
+        console.log('A user connected', socket.id);
         for (const game of games) {
             const player = game.players.find(player => player.socketID === socket.id);
             if (player) {

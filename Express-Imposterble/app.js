@@ -15,7 +15,7 @@ var app = express();
 // CORS setup
 const cors = require('cors');
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL],
+  origin: [process.env.FRONTEND_URL, process.env.NGROK_URL, process.env.HOST_FRONTEND_URL],
    // Allowed origin
   allowedHeaders: ['Authorization', 'Content-Type'], // Allowed headers
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
