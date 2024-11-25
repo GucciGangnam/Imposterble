@@ -323,11 +323,17 @@ const initSocket = (server) => {
     // CONNECT TO SOCKET ///////////////////////////////////////////////////////////////////
     io.on('connection', (socket) => {
 
+        const { playerID, lobbyCode } = socket.handshake.query;
+
+
+console.log('connection with player id of', playerID, 'joined lobby', lobbyCode)
 
         console.log('A user connected', socket.id);
+
         for (const game of games) {
-            const player = game.players.find(player => player.socketID === socket.id);
+            const player = game.players.find(player => player.playerID === playerID);
             if (player) {
+                socket.join(lobbyCode);
                 player.online = true;
                 io.to(game.lobbyCode).emit('updatedGame', game);
                 break; // Once the player is found, no need to continue
