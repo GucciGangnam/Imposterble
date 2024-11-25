@@ -63,6 +63,8 @@
             left: 20px;
             padding: 5px;
             background-color: white;
+            outline: 2px solid var(--slate-gray);
+            border-radius: 10px;
         }
 
         .SecretWord {
@@ -86,6 +88,8 @@
             left: 20px;
             padding: 5px;
             background-color: white;
+            outline: 2px solid var(--slate-gray);
+            border-radius: 10px;
         }
 
         .Votes-Ratio {
@@ -94,6 +98,8 @@
             right: 20px;
             padding: 5px;
             background-color: white;
+            outline: 2px solid var(--slate-gray);
+            border-radius: 10px;
         }
 
         .Player {
