@@ -57,6 +57,7 @@ export const HostGame = () => {
             const data = await response.json();
             // console.log(data)
             localStorage.setItem('playerID', data.playerID);
+            localStorage.setItem('currentSession', data.lobbyCode);
             navigate(`/game/${data.lobbyCode}`)
 
         } catch (err) {

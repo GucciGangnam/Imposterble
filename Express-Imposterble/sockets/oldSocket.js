@@ -321,38 +321,219 @@ const initSocket = (server) => {
     });
 
     // CONNECT TO SOCKET ///////////////////////////////////////////////////////////////////
-    io.on("connection", (socket) => {
+    io.on('connection', (socket) => {
+
         const { playerID, lobbyCode } = socket.handshake.query;
-        console.log(`Player ${playerID} joining ${lobbyCode}`);
-        socket.join(lobbyCode);
-        const game = games.find(game => game.lobbyCode === lobbyCode);
-        if (!game) {
-            // Send an error to the client
-            socket.emit("error", { message: `Game with lobby code ${lobbyCode} not found.` });
-            console.log(`Game not found for lobby code: ${lobbyCode}`);
-            return;
-        }
-        const player = game.players.find(player => player.id === playerID);
-        if (!player) {
-            // Send an error to the client
-            socket.emit("error", { message: `Player with ID ${playerID} not found in game ${lobbyCode}.` });
-            console.log(`Player not found with ID: ${playerID} in game ${lobbyCode}`);
-            return;
+
+
+console.log('connection with player id of', playerID, 'joined lobby', lobbyCode)
+
+        console.log('A user connected', socket.id);
+
+        for (const game of games) {
+            const player = game.players.find(player => player.playerID === playerID);
+            if (player) {
+                socket.join(lobbyCode);
+                player.socketID = socket.id;
+                player.online = true;
+                io.to(game.lobbyCode).emit('updatedGame', game);
+                break; // Once the player is found, no need to continue
+            }
         }
 
-        player.online = true
-        io.to(lobbyCode).emit("gameUpdated", game);
 
-        // UPDATE ROUNDS 
-        socket.on('roundsUpdated', ({ newRounds }) => {
-            game.settings.rounds = Number(newRounds);
-            io.to(game.lobbyCode).emit('gameUpdated', game);
+        // ON ENTER LOBBY  ///////////////////////////////////////////////////////////////////
+        socket.on('enterLobby', ({ lobbycode, storedPlayerID }) => {
+            console.log('enterLobby recevied from server')
+            // find game where game.lobbyCode === lobbycode
+            const game = games.find(game => game.lobbyCode === lobbycode);
+            // Check if the game exists and if the playerID is valid
+            if (game) {
+                // if (game.state.gameState !== "Lobby") {
+                //     // Emit an error message to the client
+                //     socket.emit('error', { message: "Game already in progress" });
+                //     return;
+                // }
+                if (game.players.some(player => player.id === storedPlayerID)) {
+                    // Player is valid; join the room
+                    socket.join(lobbycode);
+                    console.log(`Player ${storedPlayerID} joined room ${lobbycode}`);
+                    // Notify all players in the room (including the new player) of the updated player list
+                    // Desiged a color to that player 
+                    const colors = ['#b8c6ff', '#eccaad', '#dadada', '#f8e59b', '#cce0b5', '#d49ca2', '#d9b5e4', '#bae1e6']
+                    // Find that player ID 
+                    // Collect colors that are already assigned to players
+                    const assignedColors = game.players.map(player => player.color).filter(color => color);
+                    // Find an available color that hasn't been assigned yet
+                    const availableColor = colors.find(color => !assignedColors.includes(color));
+                    // Assign the color to the player with the matching storedPlayerID, if they don't already have one
+                    game.players.forEach(player => {
+                        if (player.id === storedPlayerID && !player.color) {
+                            player.color = availableColor || null; // Default to black if no colors are left
+                        }
+                    });
+                    // Find the player in the game.players array
+                    const player = game.players.find(player => player.id === storedPlayerID);
+                    if (player) {
+                        // Assign the socket.id to the player's socketID property
+                        player.socketID = socket.id;
+                        player.online = true;
+                    }
+                    io.to(lobbycode).emit('updatedGame', game);
+                } else {
+                    // Player ID is not in the list of players
+                    console.log(`Player with ID ${storedPlayerID} is not part of the game with lobbyCode ${lobbycode}`);
+                    // Emit an error message to the client
+                    socket.emit('error', { message: 'You do not have permission to join this game.' });
+                    // Optionally disconnect the socket to prevent further actions
+                    socket.disconnect();
+                }
+            } else {
+                // Game not found for the given lobbyCode
+                console.log(`Game not found for lobbyCode ${lobbycode}`);
+                // Emit an error message to the client
+                socket.emit('error', { message: 'Game not found.' });
+                // Optionally disconnect the socket
+                socket.disconnect();
+            }
+        });
+        // ON DISCONNECT ///////////////////////////////////////////////////////////////////
+        // Handle player disconnect event
+        socket.on('playerLeaveLobby', ({ playerID, lobbyCode }) => {
+            console.log(`Player ${playerID} LEFT LOBBY ${lobbyCode}`);
+            const game = games.find(game => game.lobbyCode === lobbyCode);
+            if (!game) {
+                socket.emit('error', { message: "Game not found" });
+                return;
+            }
+            if (game.hostId === playerID) {
+                console.log(`Host player ${playerID} is disconnecting. Deleting the game.`);
+                // Remove the game from the games array
+                const gameIndex = games.findIndex(game => game.lobbyCode === lobbyCode);
+                if (gameIndex !== -1) {
+                    games.splice(gameIndex, 1);  // Remove the game from array
+                }
+                // Emit to all players that the game is deleted
+                io.to(lobbyCode).emit('gameDeleted', { message: 'The game has been deleted because the host disconnected.' });
+                // Disconnect all players in this lobby
+                io.in(lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
+            } else {
+                // Remove the player from the game.players array
+                game.players = game.players.filter(player => player.id !== playerID);
+                // Emit the updated game object to all players in the room
+                io.to(lobbyCode).emit('updatedGame', game);
+            }
+        })
+
+        // DELETE GAME ON COMPLETION
+        socket.on('DeleteGameOver', ({ lobbyCode }) => {
+            // Find the game by lobbyCode
+            const gameIndex = games.findIndex(game => game.lobbyCode === lobbyCode);
+
+            // If the game exists, remove it from the games array
+            if (gameIndex !== -1) {
+                games.splice(gameIndex, 1);
+                console.log('game deleted') // Remove the game from the array
+            }
+        });
+
+        // PLAYER DISCOMMENT EMITION
+
+        // socket.on('playerDisconnected', ({ playerID, lobbyCode }) => {
+        //     console.log(`Player ${playerID} disconnected from lobby ${lobbyCode}`);
+        //     const game = games.find(game => game.lobbyCode === lobbyCode);
+        //     if (game) {
+        //         ConstantSourceNode.log("BREAK POINT _ NEEDS CDE")
+        //     }
+        // });
+
+
+        // Handle unexpected disconnects (if the player doesn't manually emit playerDisconnected)
+        socket.on('disconnect', () => {
+            console.log('A user disconnected:', socket.id);
+            // Check if the disconnected socket belongs to a player in a game
+            for (const game of games) {
+                const player = game.players.find(player => player.socketID === socket.id);
+                if (player) {
+                    player.online = false;
+                    io.to(game.lobbyCode).emit('updatedGame', game);
+                    break; // Once the player is found, no need to continue
+                }
+            }
         });
 
 
+        // UPDATE SETTINGS ///////////////////////////////////////////
+        // Upadte number of rounds
+        socket.on('roundsUpdated', ({ playerID, lobbyCode, newRounds }) => {
+            // Find the game where lobbyCode matches
+            const game = games.find(game => game.lobbyCode === lobbyCode);
+            if (!game) {
+                socket.emit('error', { message: "Game not found" });
+                return;
+            }
+            // Check if the player is the host
+            if (game.hostId !== playerID) {
+                socket.emit('error', { message: "You don't have permission to change settings" });
+                return;
+            }
+            // Ensure newRounds is a number
+            game.settings.rounds = Number(newRounds); // Converts newRounds to a number
+            // Emit the updated game to all clients in the room
+            io.to(game.lobbyCode).emit('updatedGame', game);
+        });
+        // update round timer 
+        socket.on('timerUpdated', ({ playerID, lobbyCode, newTimer }) => {
+            // Find the game where lobbyCode matches
+            const game = games.find(game => game.lobbyCode === lobbyCode);
+            if (!game) {
+                socket.emit('error', { message: "Game not found" });
+                return;
+            }
+            // Check if the player is the host
+            if (game.hostId !== playerID) {
+                socket.emit('error', { message: "You don't have permission to change settings" });
+                return;
+            }
+            // Update the game settings if the player is the host
+            game.settings.timer = newTimer; // Fixed typo: "rouns" to "rounds"
+            // Emit the updated game to all clients in the room
+            io.to(game.lobbyCode).emit('updatedGame', game); // Fixed typo: missing closing quote
+        });
+        // update elimination mode
+        socket.on('toggleEliminationMode', ({ playerID, lobbyCode }) => {
+            // Find the game where lobbyCode matches
+            const game = games.find(game => game.lobbyCode === lobbyCode);
+            if (!game) {
+                socket.emit('error', { message: "Game not found" });
+                return;
+            }
+            // Check if the player is the host
+            if (game.hostId !== playerID) {
+                socket.emit('error', { message: "You don't have permission to change settings" });
+                return;
+            }
+            // Update the game settings if the player is the host
+            game.settings.eliminationMode = !game.settings.eliminationMode
+            io.to(game.lobbyCode).emit('updatedGame', game);
+        })
+
         // START GAME //////////////////////////////////////////////
-        socket.on('startGame', () => {
+        socket.on('startGame', ({ playerID, lobbyCode }) => {
+            // Find the game where lobbyCode matches
+            const game = games.find(game => game.lobbyCode === lobbyCode);
+            if (!game) {
+                socket.emit('error', { message: "Game not found" });
+                return;
+            }
+            // Check if the player is the host
+            if (game.hostId !== playerID) {
+                socket.emit('error', { message: "You don't have permission to change settings" });
+                return;
+            }
+            // set game.state.gameState to Game
             game.state.gameState = "Game";
+            // SEt game.state.currentRound to 1
             game.state.currentRound = 1;
             // Randomly pick a category and assign it to game.state.currentCategory
             const randomCategory = categories[Math.floor(Math.random() * categories.length)];
@@ -372,14 +553,17 @@ const initSocket = (server) => {
                 game.state.totalScores[player.id] = 0;
             });
             // set round votes objects to a key of each player with a value of null
-            io.to(game.lobbyCode).emit('gameUpdated', game);
+            io.to(game.lobbyCode).emit('updatedGame', game);
         })
-
-
-        // VOTE FOR PLAYER 
-        socket.on('voteForPlayer', ({ votedID }) => {
+        socket.on('voteForPlayer', ({ lobbyCode, playerID, votedID }) => {
+            // Find the game where lobbyCode matches
+            const game = games.find(game => game.lobbyCode === lobbyCode);
+            if (!game) {
+                socket.emit('error', { message: "Game not found" });
+                return;
+            }
             game.state.roundVotes[playerID] = votedID;
-            io.to(game.lobbyCode).emit('gameUpdated', game);
+            io.to(game.lobbyCode).emit('updatedGame', game);
             // Iff all votes have come in
             if (Object.values(game.state.roundVotes).every(value => value !== null)) {
 
@@ -444,12 +628,23 @@ const initSocket = (server) => {
                 // set game state to roundEnd 
                 game.state.gameState = "RoundEnd"
                 // update and emit the new game obj
-                io.to(game.lobbyCode).emit('gameUpdated', game);
+                io.to(game.lobbyCode).emit('updatedGame', game);
             }
         })
 
         // NEXT ROUND //////////////////////////////////////////////////
-        socket.on('nextRound', () => {
+        socket.on('nextRound', ({ playerID, lobbyCode }) => {
+            // Find the game where lobbyCode matches
+            const game = games.find(game => game.lobbyCode === lobbyCode);
+            if (!game) {
+                socket.emit('error', { message: "Game not found" });
+                return;
+            }
+            // Check if the player is the host
+            if (game.hostId !== playerID) {
+                socket.emit('error', { message: "You don't have permission to change settings" });
+                return;
+            }
             // SEt game.state.currentRound to 1
             game.state.currentRound++;
             // Randomly pick a category and assign it to game.state.currentCategory
@@ -468,30 +663,14 @@ const initSocket = (server) => {
             // set game.state.gameState to Game
             game.state.gameState = "Game";
             // Update game
-            io.to(game.lobbyCode).emit('gameUpdated', game);
+            io.to(game.lobbyCode).emit('updatedGame', game);
         })
 
 
 
-        // Cleanup on disconnect
-        socket.on("disconnect", () => {
-            console.log(`Player ${playerID} disconnected.`);
-            player.online = false;
 
-            // Check if all players are offline
-            if (game.players.every(player => !player.online)) {
-                console.log(`All players are offline. Deleting game with lobbyCode: ${lobbyCode}`);
 
-                // Remove the game from the games array
-                const gameIndex = games.findIndex(g => g.lobbyCode === lobbyCode);
-                if (gameIndex !== -1) {
-                    games.splice(gameIndex, 1); // Delete the game
-                }
-            } else {
-                // Emit the updated game to the lobby
-                io.to(lobbyCode).emit("gameUpdated", game);
-            }
-        });
+
 
     });
 };

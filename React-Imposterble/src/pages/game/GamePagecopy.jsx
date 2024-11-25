@@ -37,7 +37,8 @@ export const GamePage = () => {
     // REFS
     const socketRef = useRef(null);  // Store the socket instance
 
-    // ue to log game when it supdated 
+
+    // REMOVE MEEEEEEEEEEE
     useEffect(() => {
         console.log(clientGameOBJ)
     }, [clientGameOBJ])
@@ -49,18 +50,21 @@ export const GamePage = () => {
         const storedLobbyCode = localStorage.getItem('currentSession');
         // If lobbycode or storedPlayerID is missing, return early
         if (!lobbycode || !storedPlayerID) {
-            console.log("Missing lobbycode or playerID");
-            alert('serious issue')
+            // console.log("Missing lobbycode or playerID");
             return;
         }
+        // const socket = io(backendURL);
         const socket = io(import.meta.env.VITE_BACKEND_URL, {
             transports: ['websocket'], // Ensure WebSocket transport is used
             query: { playerID: storedPlayerID, lobbyCode: storedLobbyCode }, // Send player info as query params to maintain state
         });
-        socketRef.current = socket;
 
-        socket.on('gameUpdated', (game) => {
+        socketRef.current = socket;
+        socket.emit('enterLobby', { lobbycode, storedPlayerID });
+
+        socket.on('updatedGame', (game) => {
             setClientGameOBJ(game);
+            localStorage.setItem('currentSession', game.lobbyCode)
             setClientPlayerID(storedPlayerID);
             if (game.hostId === storedPlayerID) {
                 setClientIsHost(true)
@@ -70,15 +74,26 @@ export const GamePage = () => {
         socket.on('error', (error) => {
             console.log(error.message);
             alert(error.message);
+            if (error.message === 'Game not found.') {
+                localStorage.removeItem('currentSession')
+                localStorage.removeItem('playerID')
+            }
+            navigate('../')
+        });
+        socket.on('gameDeleted', (message) => {
+            console.log(message.message);
+            alert(message.message);
             localStorage.removeItem('currentSession')
             localStorage.removeItem('playerID')
             navigate('../')
         });
-
+        // Cleanup the socket connection if needed
         return () => {
-            socket.disconnect();
-        }
-
+            if (storedPlayerID && storedLobbyCode) {
+                socket.emit('playerDisconnected', { playerID: storedPlayerID, lobbyCode: storedLobbyCode });
+            }
+            socket.disconnect(); // Disconnect from socket
+        };
     }, []);
 
 
