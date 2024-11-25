@@ -340,6 +340,20 @@ const initSocket = (server) => {
             return;
         }
 
+        // Desiged a color to that player 
+        const colors = ['#b8c6ff', '#eccaad', '#dadada', '#f8e59b', '#cce0b5', '#d49ca2', '#d9b5e4', '#bae1e6']
+        // Find that player ID 
+        // Collect colors that are already assigned to players
+        const assignedColors = game.players.map(player => player.color).filter(color => color);
+        // Find an available color that hasn't been assigned yet
+        const availableColor = colors.find(color => !assignedColors.includes(color));
+        // Assign the color to the player with the matching storedPlayerID, if they don't already have one
+        game.players.forEach(player => {
+            if (player.id === playerID && !player.color) {
+                player.color = availableColor || null; // Default to black if no colors are left
+            }
+        });
+
         player.online = true
         io.to(lobbyCode).emit("gameUpdated", game);
 
@@ -469,6 +483,22 @@ const initSocket = (server) => {
             game.state.gameState = "Game";
             // Update game
             io.to(game.lobbyCode).emit('gameUpdated', game);
+        })
+
+        socket.on('playerLeaveLobby', () => {
+            console.log(`Player ${playerID} LEFT LOBBY ${lobbyCode}`);
+            if (game.hostId === playerID) {
+                console.log(`Host player ${playerID} is disconnecting. Deleting the game.`);
+                // Emit to all players that the game is deleted
+                io.to(lobbyCode).emit('error', { message: 'The game has been deleted because the host disconnected.' });
+                // Disconnect all players in this lobby
+                io.in(lobbyCode).disconnectSockets(true);  // Disconnect all sockets in the room
+            } else {
+                // Remove the player from the game.players array
+                game.players = game.players.filter(player => player.id !== playerID);
+                // Emit the updated game object to all players in the room
+                io.to(lobbyCode).emit('gameUpdated', game);
+            }
         })
 
 
