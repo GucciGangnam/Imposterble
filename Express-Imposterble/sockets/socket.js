@@ -323,6 +323,7 @@ const initSocket = (server) => {
     // CONNECT TO SOCKET ///////////////////////////////////////////////////////////////////
     io.on('connection', (socket) => {
 
+
         console.log('A user connected', socket.id);
         for (const game of games) {
             const player = game.players.find(player => player.socketID === socket.id);
@@ -336,6 +337,7 @@ const initSocket = (server) => {
 
         // ON ENTER LOBBY  ///////////////////////////////////////////////////////////////////
         socket.on('enterLobby', ({ lobbycode, storedPlayerID }) => {
+            console.log('enterLobby recevied from server')
             // find game where game.lobbyCode === lobbycode
             const game = games.find(game => game.lobbyCode === lobbycode);
             // Check if the game exists and if the playerID is valid
@@ -417,10 +419,10 @@ const initSocket = (server) => {
         })
 
         // DELETE GAME ON COMPLETION
-        socket.on('DeleteGameOver', ({lobbyCode}) => {
+        socket.on('DeleteGameOver', ({ lobbyCode }) => {
             // Find the game by lobbyCode
             const gameIndex = games.findIndex(game => game.lobbyCode === lobbyCode);
-            
+
             // If the game exists, remove it from the games array
             if (gameIndex !== -1) {
                 games.splice(gameIndex, 1);
