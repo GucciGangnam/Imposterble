@@ -334,6 +334,7 @@ console.log('connection with player id of', playerID, 'joined lobby', lobbyCode)
             const player = game.players.find(player => player.playerID === playerID);
             if (player) {
                 socket.join(lobbyCode);
+                player.socketID = socket.id;
                 player.online = true;
                 io.to(game.lobbyCode).emit('updatedGame', game);
                 break; // Once the player is found, no need to continue
