@@ -50,16 +50,16 @@ export const GamePage = () => {
         const storedLobbyCode = localStorage.getItem('currentSession');
         // If lobbycode or storedPlayerID is missing, return early
         if (!lobbycode || !storedPlayerID) {
-            // console.log("Missing lobbycode or playerID");
+            console.log("Missing lobbycode or playerID");
             return;
         }
-        // const socket = io(backendURL);
         const socket = io(import.meta.env.VITE_BACKEND_URL, {
             transports: ['websocket'], // Ensure WebSocket transport is used
             query: { playerID: storedPlayerID, lobbyCode: storedLobbyCode }, // Send player info as query params to maintain state
         });
 
         socketRef.current = socket;
+        socket.connect
         socket.emit('enterLobby', { lobbycode, storedPlayerID });
 
         socket.on('updatedGame', (game) => {
